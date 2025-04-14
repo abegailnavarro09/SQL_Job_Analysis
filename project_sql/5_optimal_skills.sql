@@ -47,7 +47,7 @@ WHERE
 ORDER BY
         average_salary DESC,
         demanded_skills DESC
-LIMIT 20;
+LIMIT 5;
 
 -- Shorter way to do this: 
 SELECT
@@ -69,4 +69,4 @@ HAVING
 ORDER BY
         average_salary DESC,
         demanded_skills DESC
-LIMIT 20;
+LIMIT 5;

@@ -29,6 +29,7 @@ For this project, I utilized a variety of powerful tools to analyze and manage t
 The queries in this project focus on specific aspects of the data analyst job market. Here's my approach to addressing the key areas:
 
 ### Top Paying Data Analyst Job
+For this question, we will join two tables to retrieve job postings for "Data Analyst" roles located "Anywhere" with non-null salary data. The results will be filtered based on specific conditions: location, non-null salary, and "Data Analyst" roles. Then, we will sort them by salary in descending order and limit the output to the top 10 highest-paying jobs.
 ```sql
 SELECT
         job_id,
@@ -49,13 +50,43 @@ ORDER BY
         salary_year_avg DESC
 LIMIT 10
 ```
-
-The query joins two tables to retrieve job postings for "Data Analyst" roles located "Anywhere" with non-null salary data. It filters the results based on specific conditions (location, non-null salary and Data Analyst jobs), sorts them by salary in descending order, and limits the output to the top 10 highest-paying jobs.
+Here's the visualization for the result of the query:
 
 ![Top Paying Roles](assets\top_paying_jobs.png)
 *Visualization produced using matplotlib in Python.*
+```python
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the CSV data into a DataFrame
+df = pd.read_csv("/content/sample_data/top_jobs.csv")
+
+# Aggregate salary by job title 
+salary_by_job_title = df.groupby("job_title")["salary_year_avg"].max()
+
+# Plotting the horizontal bar graph for job titles and average salaries
+plt.figure(figsize=(10, 6))
+salary_by_job_title.sort_values().plot(kind='barh', color='skyblue')
+
+# Adding labels and title
+plt.xlabel('Average Salary (Yearly)')
+plt.ylabel('Data Analyst Job')
+plt.title('Average Salary by Data Analyst Job')
+
+# Display the plot
+plt.show()
+```
+
+Final Analysis:
+- Leadership roles (e.g., Director, Associate Director) generally earn more than technical or specialized analyst roles.
+
+- Job titles with 'Principal' or 'Director' tend to fall into higher pay brackets than titles with just "Analyst."
+
+- Remote and hybrid jobs offer salaries on par with or slightly below in-office counterparts, reflecting ongoing flexibility in the industry without huge pay penalties.
 
 ### Top Paying Data Analyst Job Skills
+For this question, we will first create a temporary table containing the top 10 highest-paying "Data Analyst" job postings based on specific conditions. Then, we join this table with skill-related data to retrieve the corresponding top skills for each job, sorting the results by salary in descending order.
 ```sql
 WITH top_job_table AS (
     SELECT
@@ -86,9 +117,39 @@ INNER JOIN skills_dim ON skills_job_dim.skill_id = skills_dim.skill_id
 ORDER BY
         salary_year_avg DESC
 ```
-The query first creates a temporary table with the top 10 highest-paying "Data Analyst" job postings based on specific conditions. Then, it joins this table with skill-related data to retrieve the corresponding top skills for each job, sorting the results by salary in descending order.
+Here's the visualization of the result:
+![Top Payinfg Skills](assets\top_paying_skills.png)
+*Visualization produced for top skills for Data Analyst using matplotlib in Python.*
+
+```python
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the CSV data into a DataFrame
+df = pd.read_csv("/content/sample_data/top_paying_skills.csv")
+
+# Aggregate salary by job title (since each job title is repeated for skills)
+salary_by_job_title = df.groupby("top_skills")["salary_year_avg"].max()
+
+# Plotting the horizontal bar graph for skills and average salaries
+plt.figure(figsize=(10, 6))
+salary_by_job_title.sort_values().plot(kind='barh', color='skyblue')
+
+# Adding labels and title
+plt.xlabel('Average Salary (Yearly)')
+plt.ylabel('Skills')
+plt.title('Average Salary by Data Analyst Skills')
+```
+
+Final Analysis:
+- SQL and Python are the top two must-have skills.
+- Tableau shows strong demand, reflecting the importance of data visualization.
+- Tools like Snowflake, Excel, and Pandas also appear frequently, hinting at the importance of both data handling and presentation.
+- Cloud and version control tools like Azure and Bitbucket are emerging in analyst roles.
 
 ### Top Demanded Data Analyst Skills
+For this question, we will first create a temporary table containing the top 10 highest-paying "Data Analyst" job postings based on specific conditions. Then, we will join this table with skill-related data to retrieve the corresponding top skills for each job, sorting the results by salary in descending order.
 ```sql
 SELECT
         skills,
@@ -107,9 +168,24 @@ ORDER BY
         skill_demand DESC
 LIMIT 5
 ```
-The query first creates a temporary table with the top 10 highest-paying "Data Analyst" job postings based on specific conditions. Then, it joins this table with skill-related data to retrieve the corresponding top skills for each job, sorting the results by salary in descending order.
+The table below displays the highest-paying skills along with their frequency of demand, based on the results obtained from the query mentioned above.
 
-### Top Paying Data Analyst Skills
+| Data Analyst Skills |  Demand Frequency |
+|        :---         |       :---:       |
+|         SQL         |        398        |
+|        Excel        |        256        |
+|        Python       |        236        |
+|       Tablea        |        230        |
+|          R          |        148        |
+
+Final Analysis:
+- SQL is the most in-demand skill with 398 mentions, highlighting its critical role in data handling and analysis.
+
+- Excel, Python, and Tableau follow closely, showing strong demand for both traditional tools and modern analytics.
+
+
+### Top Paying Data Analyst Skills Based on Average Salary
+For this part, we will calculate the average salary for each skill associated with "Data Analyst" roles, filtering for jobs with non-null salary data. The results will be grouped by skill, ordered by average salary in descending order, and limited to the top 10 highest-paying skills.
 ```sql
 SELECT
         skills,
@@ -140,9 +216,28 @@ ORDER BY
         average_salary DESC
 LIMIT 10
 ```
-The query calculates the average salary for each skill associated with "Data Analyst" roles, filtering for jobs with non-null salary data. It groups the results by skill, orders them by average salary in descending order, and limits the output to the top 10 highest-paying skills.
+The table below shows the top paying skills based on average salary associated with each skill for Data Analyst positions.
+
+| Data Analyst Skills |   Average Salary  |
+|        :---         |       :---:       |
+|         svn         |     400000.00     |
+|      solidity       |     179000.00     |
+|      couchbase      |     160515.00     |
+|      datarobot      |     155485.50     |
+|        golang       |     155000.00     |
+|        mxnet        |     149000.00     |
+|        dplyr        |     147633.33     |
+|        vmware       |     147500.00     |
+|      terraform      |     146733.83     |
+|        twilio       |     138500.00     |
+
+Final Analysis:
+- Niche & Emerging Tech Pays More: Skills like Solidity, MXNet, and DataRobot offer high salaries due to their rarity and relevance in cutting-edge fields like blockchain and AI/AutoML.
+- Infrastructure & DevOps Are Valuable: Tools like Terraform, VMware, and Couchbase command top pay for enabling scalable, cloud-native, and secure data systems.
+- Specialization Over Generalization: High salaries are linked to deep expertise in specific tools rather than broad, general-purpose skills—reflecting demand for specialized roles in modern data teams.
 
 ### Optimal Data Analyst Skills
+For this question, we will write a query to calculate the demand and average salary for each skill associated with "Data Analyst" roles. The query will filter for jobs with non-null salary data and located "Anywhere." The results will be grouped by skill, include only skills with more than 10 job postings, and be ordered by average salary and demand in descending order, with the output limited to the top 5 skills.
 ```sql
 WITH top_demand AS (
     SELECT
@@ -186,9 +281,8 @@ WHERE
 ORDER BY
         average_salary DESC,
         demanded_skills DESC
-LIMIT 20;
+LIMIT 5;
 ```
-The query first creates two temporary tables: one for the most demanded skills based on job postings and another for the average salary associated with each skill. It then joins these tables to get the skills that are both highly demanded and highly paid. The results are filtered to include skills with more than 10 job postings and are sorted by average salary and demand in descending order, limiting the output to the top 20 skills.
 
 #### Shorter way to do this:
 ```sql
@@ -211,9 +305,23 @@ HAVING
 ORDER BY
         average_salary DESC,
         demanded_skills DESC
-LIMIT 20;
+LIMIT 5;
 ```
-The query calculates the demand and average salary for each skill associated with "Data Analyst" roles, filtering for jobs with non-null salary data and located "Anywhere." It groups the results by skill, only including skills with more than 10 job postings, and orders them by average salary and demand in descending order, limiting the output to the top 20 skills.
+The table below shows top 10 optimal skills for Data Analyst:
+| Skill ID |   Skills   | Frequency of Demands | Average Salary |
+|    :---  |   :---:    |         :---:        |      :---:     |
+|     8    |     go     |          27          |    115319.89   |
+|    234   | confluence |          11          |    114209.91   |
+|    97    |   hadoop   |          22          |    113192.57   |
+|    80    | snowflake  |          37          |    112947.97   |
+|    74    |    azure   |          34          |    111225.10   |
+
+Final Analysis:
+- Snowflake stands out as the most optimal skill, with the highest demand (37) and a strong average salary (~$113K), making it a top pick for market relevance and pay.
+
+- Azure is another optimal choice, combining high demand (34) with a solid salary (~$111K), especially valuable for cloud-focused roles.
+
+- While Go offers the highest salary, its lower demand (27) makes it a more niche, high-risk-high-reward option compared to Snowflake or Azure.
 
 # What I Learned
 By working with SQL on these problems, I learned how to:
