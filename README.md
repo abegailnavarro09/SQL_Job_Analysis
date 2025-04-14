@@ -52,7 +52,7 @@ LIMIT 10
 ```
 Here's the visualization for the result of the query:
 
-![Top Paying Roles](assets\top_paying_jobs.png)
+![Top Paying Roles](assets/top_paying_jobs.png)
 *Visualization produced using matplotlib in Python.*
 ```python
 # Import necessary libraries
@@ -118,7 +118,7 @@ ORDER BY
         salary_year_avg DESC
 ```
 Here's the visualization of the result:
-![Top Payinfg Skills](assets\top_paying_skills.png)
+![Top Payinfg Skills](assets/top_paying_skills.png)
 *Visualization produced for top skills for Data Analyst using matplotlib in Python.*
 
 ```python
